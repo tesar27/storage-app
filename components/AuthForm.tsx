@@ -22,6 +22,7 @@ import {
   signInUser,
 } from "@/lib/actions/user.actions";
 import OTPModal from "./OTPModal";
+import Link from "next/link";
 
 type FormType = "sign-in" | "sign-up";
 
@@ -124,6 +125,20 @@ export const AuthForm = ({ type }: { type: FormType }) => {
             Send OTP
           </button>
           {errorMessage && <p className="error-message">*{errorMessage}</p>}
+          <div className="flex justify-center body-2">
+            <p className="text-light-100">
+              {type === "sign-in"
+                ? "Don't have an account?"
+                : "Already have an account?"}
+            </p>
+            <Link
+              href={type === "sign-in" ? "/sign-up" : "/sign-in"}
+              className="ml-1 font-medium"
+            >
+              {" "}
+              {type === "sign-in" ? "Sign Up" : "Sign In"}
+            </Link>
+          </div>
         </form>
       </Form>
       {accountId && (
