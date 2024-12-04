@@ -1,4 +1,3 @@
-"use client";
 import AppCard from "@/components/app-card";
 import Sort from "@/components/sort";
 import { getFiles } from "@/lib/actions/file.actions";
