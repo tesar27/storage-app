@@ -23,7 +23,7 @@ import { NavMain } from "./nav-main";
 const items = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/",
     icon: LayoutDashboard,
   },
   {
@@ -77,17 +77,19 @@ export const AppSidebar = ({ user, ...props }: { user: User }) => {
       <SidebarContent>
         {/* <NavMain items={items} /> */}
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="p-6 text-3xl">
+            Application
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="">
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.title} className="">
                   <SidebarMenuButton asChild>
                     <Link
                       key={item.title}
                       href={item.url}
                       className={cn(
-                        "",
+                        "p-6",
                         pathname === item.url && "bg-white text-black"
                       )}
                     >

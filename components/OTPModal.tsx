@@ -98,9 +98,7 @@ const OTPModal = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="w-full text-white">
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel className="w-full ">Cancel</AlertDialogCancel>
           {isLoading ? (
             <Button disabled>
               <Loader2 className="animate-spin" />
