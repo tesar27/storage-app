@@ -59,7 +59,6 @@ const createQueries = (currentUser: Models.Document, types: string[], searchText
     queries.push(orderBy === 'asc' ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy));
   }
   
-  console.log({queries});
   return queries;
 }
 export const getFiles = async ({types = [], searchText = '', sort = '$createdAt-desc', limit}: GetFilesProps) => {
@@ -70,13 +69,11 @@ export const getFiles = async ({types = [], searchText = '', sort = '$createdAt-
     if(!currentUser) { throw new Error('User not found') }
 
     const queries = createQueries(currentUser, types, searchText, sort, limit);
-    console.log({currentUser, queries})
     const files = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
       queries
     );
-    console.log(files);
     return parseStringify(files);
   } catch (error) {
     handleError(error, 'Failed to get files');

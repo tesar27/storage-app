@@ -68,7 +68,7 @@ const OTPModal = ({
       const sessionId = await verifySecret({ accountId, password });
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log({ sessionId });
-      if (sessionId) router.push("/dashboard");
+      if (sessionId) router.push("/");
     } catch (error) {
       console.error("Failed to verify OTP", error);
     }
@@ -87,18 +87,23 @@ const OTPModal = ({
           <AlertDialogTitle className="text-center">
             Enter Your OTP
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-center">
+          <AlertDialogDescription>
             {true && (
               <>
                 We&apos;ve sent a code to{" "}
                 <span className="pl-1 text-brand">{email}</span>{" "}
               </>
             )}
-            <_InputOTP value={password} onChange={setPassword} />
+            <div className="pl-6 pt-2">
+              {" "}
+              <_InputOTP value={password} onChange={setPassword} />
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="w-full ">Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="w-full text-black">
+            Cancel
+          </AlertDialogCancel>
           {isLoading ? (
             <Button disabled>
               <Loader2 className="animate-spin" />

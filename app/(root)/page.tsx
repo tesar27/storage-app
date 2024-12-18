@@ -9,6 +9,7 @@ import Thumbnail from "@/components/thumbnail";
 import { Separator } from "@/components/ui/separator";
 import { getFiles, getTotalSpaceUsed } from "@/lib/actions/file.actions";
 import { convertFileSize, getUsageSummary } from "@/lib/utils";
+import { ChartPie } from "@/components/pie-chart";
 
 const Dashboard = async () => {
   // Parallel requests
@@ -22,16 +23,16 @@ const Dashboard = async () => {
 
   return (
     <div className="dashboard-container">
-      <section>
-        <Chart used={totalSpace.used} />
-
+      <section className="">
+        {/* <Chart used={totalSpace.used} /> */}
+        <ChartPie files={files} used={totalSpace.used} />
         {/* Uploaded file type summaries */}
         <ul className="dashboard-summary-list">
           {usageSummary.map((summary) => (
             <Link
               href={summary.url}
               key={summary.title}
-              className="dashboard-summary-card"
+              className="dashboard-summary-card "
             >
               <div className="space-y-4">
                 <div className="flex justify-between gap-3">
@@ -42,12 +43,14 @@ const Dashboard = async () => {
                     alt="uploaded image"
                     className="summary-type-icon"
                   />
-                  <h4 className="summary-type-size">
+                  <h4 className="summary-type-size ">
                     {convertFileSize(summary.size) || 0}
                   </h4>
                 </div>
 
-                <h5 className="summary-type-title">{summary.title}</h5>
+                <h5 className="summary-type-title text-center">
+                  {summary.title}
+                </h5>
                 <Separator className="bg-light-400" />
                 <FormattedDateTime
                   date={summary.latestDate}
@@ -60,7 +63,7 @@ const Dashboard = async () => {
       </section>
 
       {/* Recent files uploaded */}
-      <section className="dashboard-recent-files">
+      <section className="">
         <h2 className="h3 xl:h2 text-light-100">Recent files uploaded</h2>
         {files.documents.length > 0 ? (
           <ul className="flex flex-col gap-5 mt-5">

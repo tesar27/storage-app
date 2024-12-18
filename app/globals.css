@@ -25,7 +25,7 @@
     @apply scroll-smooth;
   }
   body {
-    @apply min-h-screen ;
+    @apply min-h-screen;
   }
   /* Remove scrollbar */
   .remove-scrollbar::-webkit-scrollbar {
@@ -85,6 +85,10 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --color-documents: #ff0000; /* Example color */
+    --color-images: #00ff00; /* Example color */
+    --color-media: #0000ff; /* Example color */
+    --color-other: #ffff00;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -132,10 +136,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 } */
 
-
 @layer utilities {
   .h1 {
     @apply text-[34px] leading-[42px] font-bold;
+  }
+  .h4 {
+    @apply text-[18px] leading-[20px] font-medium;
+  }
+  .h5 {
+    @apply text-[16px] leading-[24px] font-semibold;
   }
   .flex-center {
     @apply flex items-center justify-center;
@@ -143,8 +152,40 @@ body {
   .main-content {
     @apply remove-scrollbar h-full flex-1 overflow-auto px-5 py-7 sm:mr-7 md:mb-7 md:px-9 md:py-10 !important;
   }
+  .subtitle-2 {
+    @apply text-[14px] leading-[20px] font-semibold;
+  }
+  .dashboard-container {
+    @apply mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-2 xl:gap-10 !important;
+  }
+  .dashboard-summary-list {
+    @apply mt-6 grid grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-9 !important;
+  }
+  .dashboard-summary-card {
+    @apply relative mt-6 rounded-[20px] bg-white p-5 transition-all hover:scale-105 !important;
+  }
+  .summary-type-icon {
+    @apply absolute -left-3 top-[-25px] z-10 w-[190px] object-contain !important;
+  }
+  .summary-type-size {
+    @apply h4 relative z-20 w-full text-right !important;
+  }
+  .summary-type-title {
+    @apply h5 relative z-20 text-center !important;
+  }
+  .dashboard-recent-files {
+    @apply h-full rounded-[20px] bg-white p-5 xl:p-8 !important;
+  }
+  .recent-file-details {
+    @apply flex w-full flex-col xl:flex-row xl:justify-between !important;
+  }
+  .recent-file-name {
+    @apply subtitle-2 line-clamp-1 w-full sm:max-w-[200px] lg:max-w-[250px] !important;
+  }
+  .recent-file-date {
+    @apply body-2 !important;
+  }
 }
-
 
 @layer base {
   :root {
