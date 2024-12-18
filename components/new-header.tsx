@@ -9,7 +9,7 @@ const tags = Array.from({ length: 50 }).map(
 const NewHeader = () => {
   return (
     <div className="flex items-center justify-between p-2">
-      <p className="p-2"> New Header </p>
+      <p className="p-2"> </p>
       <div className="p-2 ml-auto">
         <AppSearch />
       </div>

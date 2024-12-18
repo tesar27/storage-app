@@ -35,7 +35,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
             <NewHeader />
           </div>
         </div>
-        <div className="px-4 bg-[#F2F4F8]"> {children} </div>
+        <div className="px-4"> {children} </div>
         <div className="pr-2 ml-auto">
           <div className="fixed z-50 bottom-4 right-4">
             <div className="bg-white rounded-lg shadow-lg ">
