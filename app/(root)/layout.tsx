@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import FileUploader from "@/components/file-uploader";
 import { Toaster } from "@/components/ui/toaster";
 import AppSearch from "@/components/app-search";
-import Header from "@/components/header";
+import NewHeader from "@/components/new-header";
 export const dynamic = "force-dynamic";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
@@ -32,7 +32,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
             <Separator orientation="vertical" className="h-4" />
           </div>
           <div className="ml-auto">
-            <Header />
+            <NewHeader />
           </div>
         </div>
         <div className="px-4 bg-[#F2F4F8]"> {children} </div>
