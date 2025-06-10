@@ -76,7 +76,7 @@ export const AppSidebar = ({ user, ...props }: { user: User }) => {
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent className="bg-white border-r border-slate-200">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-6 py-4 text-2xl font-bold bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent">
+          <SidebarGroupLabel className="px-6 py-6 text-2xl font-bold bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent">
             CloudStore
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-2">

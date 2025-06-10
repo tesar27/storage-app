@@ -21,13 +21,13 @@ import {
 
 const getColorForFileType = (fileType: string): string => {
   const colors: { [key: string]: string } = {
-    document: "var(--color-document)",
-    image: "var(--color-image)",
-    audio: "var(--color-audio)",
-    video: "var(--color-video)",
-    other: "var(--color-other)",
+    document: "#3b82f6", // Blue
+    image: "#06b6d4", // Cyan
+    audio: "#8b5cf6", // Purple
+    video: "#f59e0b", // Amber
+    other: "#ef4444", // Red
   };
-  return colors[fileType] || "var(--color-default)";
+  return colors[fileType] || "#6b7280"; // Gray fallback
 };
 
 const chartConfig = {
@@ -36,23 +36,23 @@ const chartConfig = {
   },
   document: {
     label: "Documents",
-    color: "hsl(var(--chart-1))",
+    color: "#3b82f6",
   },
   image: {
     label: "Images",
-    color: "hsl(var(--chart-2))",
+    color: "#06b6d4",
   },
   audio: {
     label: "Media",
-    color: "hsl(var(--chart-3))",
+    color: "#8b5cf6",
   },
   video: {
-    label: "Other",
-    color: "hsl(var(--chart-4))",
+    label: "Videos",
+    color: "#f59e0b",
   },
   other: {
     label: "Other",
-    color: "hsl(var(--chart-5))",
+    color: "#ef4444",
   },
 } satisfies ChartConfig;
 
@@ -71,6 +71,8 @@ export function ChartPie({ files, used }: { files: any; used: number }) {
     amount: categorizedFiles[type],
     fill: getColorForFileType(type),
   }));
+
+  console.log("Chart data with colors:", chartData);
   // const totalAmount = React.useMemo(() => {
   //   return chartData.reduce((acc, curr) => acc + curr.amount, 0);
   // }, []);
