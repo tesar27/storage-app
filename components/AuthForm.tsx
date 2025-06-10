@@ -121,9 +121,7 @@ export const AuthForm = ({ type }: { type: FormType }) => {
           <Button type="submit" variant="secondary" disabled={isLoading}>
             {type === "sign-in" ? "Sign In" : "Sign Up"}
           </Button>
-          <button onClick={handleSendOTP} disabled={isLoading}>
-            Send OTP
-          </button>
+
           {errorMessage && <p className="error-message">*{errorMessage}</p>}
           <div className="flex justify-center body-2">
             <p className="text-light-100">
