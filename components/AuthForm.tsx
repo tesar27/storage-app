@@ -79,66 +79,132 @@ export const AuthForm = ({ type }: { type: FormType }) => {
 
   return (
     <>
-      <Form {...form}>
-        {isLoading && <LoadingSpinner />}
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-1/3 space-y-2"
-        >
-          <h1 className="form-title">
-            {type === "sign-in" ? "Sign In" : "Sign Up"}
+      <div className="w-full">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-sky-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg
+              className="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            {type === "sign-in" ? "Welcome back" : "Create your account"}
           </h1>
-          {type === "sign-up" && (
+          <p className="text-slate-600">
+            {type === "sign-in"
+              ? "Sign in to access your secure storage"
+              : "Join thousands of users managing their files securely"}
+          </p>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {type === "sign-up" && (
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 font-medium">
+                      Full Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your full name"
+                        className="h-12 border-slate-200 focus:border-sky-400 focus:ring-sky-400/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
-              name="fullName"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel className="text-slate-700 font-medium">
+                    Email Address
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input
+                      placeholder="Enter your email address"
+                      type="email"
+                      className="h-12 border-slate-200 focus:border-sky-400 focus:ring-sky-400/20"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>Input your full name.</FormDescription>
-                  <FormMessage />
+                  <FormMessage className="text-red-500" />
                 </FormItem>
               )}
             />
-          )}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormDescription>Input your email.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" variant="secondary" disabled={isLoading}>
-            {type === "sign-in" ? "Sign In" : "Sign Up"}
-          </Button>
 
-          {errorMessage && <p className="error-message">*{errorMessage}</p>}
-          <div className="flex justify-center body-2">
-            <p className="text-light-100">
-              {type === "sign-in"
-                ? "Don't have an account?"
-                : "Already have an account?"}
-            </p>
-            <Link
-              href={type === "sign-in" ? "/sign-up" : "/sign-in"}
-              className="ml-1 font-medium"
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-12 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {" "}
-              {type === "sign-in" ? "Sign Up" : "Sign In"}
-            </Link>
-          </div>
-        </form>
-      </Form>
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Processing...</span>
+                </div>
+              ) : type === "sign-in" ? (
+                "Sign In"
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+
+            {errorMessage && (
+              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+                <svg
+                  className="w-4 h-4 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className="text-sm">{errorMessage}</span>
+              </div>
+            )}
+
+            <div className="text-center pt-4">
+              <p className="text-slate-600">
+                {type === "sign-in"
+                  ? "Don't have an account?"
+                  : "Already have an account?"}
+                <Link
+                  href={type === "sign-in" ? "/sign-up" : "/sign-in"}
+                  className="ml-1 font-medium text-sky-600 hover:text-sky-700 transition-colors"
+                >
+                  {type === "sign-in" ? "Sign up" : "Sign in"}
+                </Link>
+              </p>
+            </div>
+          </form>
+        </Form>
+      </div>
+
       {accountId && (
         <OTPModal accountId={accountId} email={form.getValues("email")} />
       )}

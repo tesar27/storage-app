@@ -82,48 +82,56 @@ const OTPModal = ({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger>Open</AlertDialogTrigger>
-      <AlertDialogContent className="justify-center text-white ">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-center">
-            Enter Your OTP
+      <AlertDialogContent className="sm:max-w-md bg-white border-slate-200">
+        <AlertDialogHeader className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-sky-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <AlertDialogTitle className="text-2xl font-bold text-slate-900 mb-2">
+            Enter Verification Code
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            {true && (
-              <>
-                We&apos;ve sent a code to{" "}
-                <span className="pl-1 text-brand">{email}</span>{" "}
-              </>
-            )}
-            <div className="pl-6 pt-2">
-              {" "}
-              <_InputOTP value={password} onChange={setPassword} />
-            </div>
+          <AlertDialogDescription className="text-slate-600">
+            We&apos;ve sent a 6-digit code to{" "}
+            <span className="font-medium text-sky-600">{email}</span>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel className="w-full text-black">
+        
+        <div className="flex justify-center py-6">
+          <_InputOTP value={password} onChange={setPassword} />
+        </div>
+
+        <AlertDialogFooter className="flex-col space-y-3 sm:space-y-0 sm:flex-row sm:space-x-3">
+          <AlertDialogCancel className="w-full sm:w-auto border-slate-200 text-slate-700 hover:bg-slate-50">
             Cancel
           </AlertDialogCancel>
           {isLoading ? (
-            <Button disabled>
-              <Loader2 className="animate-spin" />
-              Please wait
+            <Button 
+              disabled 
+              className="w-full sm:w-auto bg-gradient-to-r from-sky-500 to-blue-600 text-white"
+            >
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              Verifying...
             </Button>
           ) : (
-            <AlertDialogAction className="w-full" onClick={handleSubmit}>
-              {" "}
-              Submit
+            <AlertDialogAction 
+              className="w-full sm:w-auto bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white border-0" 
+              onClick={handleSubmit}
+            >
+              Verify Code
             </AlertDialogAction>
           )}
         </AlertDialogFooter>
-        <div className="mt-2 text-center">
-          Didn&apos;t get a code?
+        
+        <div className="text-center pt-4 border-t border-slate-100">
+          <p className="text-sm text-slate-600 mb-2">Didn&apos;t receive the code?</p>
           <Button
-            variant={"link"}
-            className="w-full pl-1 text-center text-blue-600"
+            variant="ghost"
+            className="text-sky-600 hover:text-sky-700 hover:bg-sky-50 p-0 h-auto font-medium"
             onClick={handleResendOTP}
           >
-            Resend OTP
+            Resend verification code
           </Button>
         </div>
       </AlertDialogContent>

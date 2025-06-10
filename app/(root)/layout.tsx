@@ -46,14 +46,6 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         </div>
-        {/* <div className="flex flex-col flex-1 gap-4 p-4 pt-0">
-          <div className="grid gap-4 auto-rows-min md:grid-cols-3">
-            <div className="bg-[#18181C] aspect-video rounded-xl" />
-            <div className="bg-[#18181C] aspect-video rounded-xl" />
-            <div className="bg-[#18181C] aspect-video rounded-xl" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl  bg-[#18181C] md:min-h-min" />
-        </div> */}
         <Toaster />
       </SidebarInset>
     </SidebarProvider>
