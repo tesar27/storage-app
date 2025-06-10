@@ -51,13 +51,13 @@ const Dashboard = async () => {
               >
                 <div className="space-y-4">
                   <div className="flex justify-between items-start gap-3">
-                    <div className="p-3 bg-gradient-to-br from-sky-50 to-blue-50 rounded-xl group-hover:from-sky-100 group-hover:to-blue-100 transition-colors">
+                    <div className="bg-gradient-to-br from-sky-50 to-blue-50 rounded-xl group-hover:from-sky-100 group-hover:to-blue-100 transition-colors p-1">
                       <Image
                         src={summary.icon}
-                        width={40}
-                        height={40}
+                        width={80}
+                        height={80}
                         alt={`${summary.title} icon`}
-                        className="w-10 h-10 object-contain"
+                        className="w-20 h-20 object-contain"
                       />
                     </div>
                     <div className="text-right">
