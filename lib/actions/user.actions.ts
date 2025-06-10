@@ -1,6 +1,6 @@
 "use server";
 
-import { ID, Query } from "node-appwrite";
+import { ID, Query, OAuthProvider } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { avatarPlaceholderUrl } from "@/constants";
@@ -141,5 +141,35 @@ export const signOutUser = async () => {
     handleError(error, "Failed to sign out user");
   } finally {
     redirect("/sign-in");
+  }
+};
+
+export const signInWithOAuth = async (provider: 'google' | 'github') => {
+  try {
+    const { account } = await createAdminClient();
+    
+    const providerMap = {
+      google: OAuthProvider.Google,
+      github: OAuthProvider.Github,
+    };
+    
+    const successRedirectUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/oauth`;
+    const failureRedirectUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/sign-in?error=oauth_failed`;
+    
+    console.log("Creating OAuth token for:", provider);
+    console.log("Success URL:", successRedirectUrl);
+    console.log("Failure URL:", failureRedirectUrl);
+    
+    const redirectURL = await account.createOAuth2Token(
+      providerMap[provider],
+      successRedirectUrl,
+      failureRedirectUrl,
+    );
+    
+    console.log("OAuth redirect URL created:", redirectURL);
+    return redirectURL;
+  } catch (error) {
+    console.error(`OAuth ${provider} error:`, error);
+    handleError(error, `Failed to sign in with ${provider}`);
   }
 };
