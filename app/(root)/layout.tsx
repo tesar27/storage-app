@@ -25,20 +25,20 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <AppSidebar user={currentUser} />
-      <SidebarInset>
-        <div className="flex h-16 shrink-0 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="h-4" />
+      <SidebarInset className="bg-slate-50">
+        <div className="flex h-16 shrink-0 items-center gap-2 px-6 bg-white border-b border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="text-slate-600 hover:text-sky-600 hover:bg-sky-50 rounded-lg" />
+            <Separator orientation="vertical" className="h-6 bg-slate-300" />
           </div>
           <div className="ml-auto">
             <NewHeader />
           </div>
         </div>
-        <div className="px-4"> {children} </div>
+        <div className="p-6">{children}</div>
         <div className="pr-2 ml-auto">
-          <div className="fixed z-50 bottom-4 right-4">
-            <div className="bg-white rounded-lg shadow-lg ">
+          <div className="fixed z-50 bottom-6 right-6">
+            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 hover:shadow-2xl transition-shadow duration-300">
               <FileUploader
                 ownerId={currentUser.$id}
                 accountId={currentUser.accountId}

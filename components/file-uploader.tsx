@@ -62,7 +62,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleRemoveFile = (
-    e: React.MouseEvent<HTMLImageElement>,
+    e: React.MouseEvent<HTMLElement>,
     fileName: string
   ) => {
     e.stopPropagation();
@@ -72,59 +72,88 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   return (
     <div {...getRootProps()} className="cursor-pointer">
       {files.length > 0 ? (
-        <Alert>
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>
-            <ul className="uploader-preview-list">
-              <h4 className="h4 text-light-100">Uploading</h4>
+        <div className="p-4 bg-white rounded-2xl border border-slate-200">
+          <div className="mb-4">
+            <h4 className="font-semibold text-slate-900 mb-2">
+              Uploading Files
+            </h4>
+            <p className="text-sm text-slate-600">
+              Please wait while your files are being uploaded...
+            </p>
+          </div>
 
-              {files.map((file, index) => {
-                const { type, extension } = getFileType(file.name);
+          <ul className="space-y-3 mb-4">
+            {files.map((file, index) => {
+              const { type, extension } = getFileType(file.name);
 
-                return (
-                  <li key={`${file.name}-${index}`} className="p-2">
-                    <div className="flex items-center gap-1">
-                      <Thumbnail
-                        type={type}
-                        extension={extension}
-                        url={convertFileToUrl(file)}
+              return (
+                <li
+                  key={`${file.name}-${index}`}
+                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl"
+                >
+                  <Thumbnail
+                    type={type}
+                    extension={extension}
+                    url={convertFileToUrl(file)}
+                    className="w-10 h-10"
+                  />
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-slate-900 truncate">
+                      {file.name}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Image
+                        src="/assets/icons/file-loader.gif"
+                        width={60}
+                        height={20}
+                        alt="Uploading..."
+                        className="object-contain"
                       />
-
-                      <div className="bold">
-                        {file.name}
-                        <Image
-                          src="/assets/icons/file-loader.gif"
-                          width={80}
-                          height={26}
-                          alt="Loader"
-                        />
-                      </div>
+                      <span className="text-xs text-slate-500">
+                        Uploading...
+                      </span>
                     </div>
+                  </div>
 
+                  <button
+                    onClick={(e) => handleRemoveFile(e, file.name)}
+                    className="p-1 hover:bg-red-50 rounded-lg transition-colors"
+                  >
                     <Image
                       src="/assets/icons/remove.svg"
-                      width={24}
-                      height={24}
+                      width={20}
+                      height={20}
                       alt="Remove"
-                      onClick={(e) => handleRemoveFile(e, file.name)}
+                      className="opacity-60 hover:opacity-100"
                     />
-                  </li>
-                );
-              })}
-            </ul>
-            <input {...getInputProps()} />
-            <Button type="button" variant="secondary">
-              <Upload /> Upload More
-            </Button>
-          </AlertDescription>
-        </Alert>
-      ) : (
-        <>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+
           <input {...getInputProps()} />
-          <Button type="button" variant="secondary">
-            <Upload /> Upload
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-sky-200 text-sky-600 hover:bg-sky-50 hover:border-sky-300"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Upload More Files
           </Button>
-        </>
+        </div>
+      ) : (
+        <div className="p-4">
+          <input {...getInputProps()} />
+          <Button
+            type="button"
+            className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white border-0 rounded-xl px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Upload Files
+          </Button>
+        </div>
       )}
     </div>
   );

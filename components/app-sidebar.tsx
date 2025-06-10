@@ -74,27 +74,34 @@ export const AppSidebar = ({ user, ...props }: { user: User }) => {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarContent>
-        {/* <NavMain items={items} /> */}
+      <SidebarContent className="bg-white border-r border-slate-200">
         <SidebarGroup>
-          <SidebarGroupLabel className="p-6 text-3xl">
-            Application
+          <SidebarGroupLabel className="px-6 py-4 text-2xl font-bold bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent">
+            CloudStore
           </SidebarGroupLabel>
-          <SidebarGroupContent className="">
+          <SidebarGroupContent className="px-2">
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title} className="">
+                <SidebarMenuItem key={item.title} className="mb-1">
                   <SidebarMenuButton asChild>
                     <Link
                       key={item.title}
                       href={item.url}
                       className={cn(
-                        "p-6",
-                        pathname === item.url && "bg-white text-black"
+                        "flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-sky-600 transition-all duration-200 font-medium",
+                        pathname === item.url &&
+                          "bg-gradient-to-r from-sky-50 to-blue-50 text-sky-700 border border-sky-200 shadow-sm"
                       )}
                     >
-                      <item.icon />
-                      <span className="text-lg">{item.title}</span>
+                      <item.icon
+                        className={cn(
+                          "w-5 h-5",
+                          pathname === item.url
+                            ? "text-sky-600"
+                            : "text-slate-500"
+                        )}
+                      />
+                      <span className="text-base">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -103,7 +110,7 @@ export const AppSidebar = ({ user, ...props }: { user: User }) => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-slate-200 bg-white">
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>

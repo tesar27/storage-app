@@ -76,15 +76,11 @@ export function ChartPie({ files, used }: { files: any; used: number }) {
   // }, []);
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
-      </CardHeader>
+    <Card className="border-0 shadow-none">
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
             <ChartTooltip
@@ -95,8 +91,10 @@ export function ChartPie({ files, used }: { files: any; used: number }) {
               data={chartData}
               dataKey="amount"
               nameKey="fileType"
-              innerRadius={60}
-              strokeWidth={5}
+              innerRadius={70}
+              outerRadius={120}
+              strokeWidth={3}
+              stroke="white"
             >
               <Label
                 content={({ viewBox }) => {
@@ -111,16 +109,16 @@ export function ChartPie({ files, used }: { files: any; used: number }) {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-slate-900 text-3xl font-bold"
                         >
                           {files.total}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className="fill-slate-600 text-sm"
                         >
-                          Total Amount
+                          Total Files
                         </tspan>
                       </text>
                     );
@@ -131,10 +129,29 @@ export function ChartPie({ files, used }: { files: any; used: number }) {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Total space used {used} KB
+      <CardFooter className="flex-col gap-3 pt-6">
+        <div className="flex items-center gap-2 font-medium text-slate-700">
+          <div className="w-2 h-2 bg-sky-500 rounded-full"></div>
+          Storage Used: {Math.round(used / 1024)} MB
         </div>
+        {chartData.length > 0 && (
+          <div className="grid grid-cols-2 gap-4 w-full text-sm">
+            {chartData.map((entry, index) => (
+              <div key={entry.fileType} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: entry.fill }}
+                ></div>
+                <span className="text-slate-600 capitalize">
+                  {entry.fileType}s
+                </span>
+                <span className="ml-auto font-medium text-slate-900">
+                  {entry.amount}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </CardFooter>
     </Card>
   );
