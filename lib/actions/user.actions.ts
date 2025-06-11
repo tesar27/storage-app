@@ -97,21 +97,69 @@ export const verifySecret = async ({
 
 export const getCurrentUser = async () => {
   try {
-    const { databases, account } = await createSessionClient();
+    console.log("🔍 Getting current user...");
+    const sessionClient = await createSessionClient();
+    
+    // No session exists
+    if (!sessionClient) {
+      console.log("❌ No session client available");
+      return null;
+    }
 
-    const result = await account.get();
+    const { account } = sessionClient;
 
-    const user = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.usersCollectionId,
-      [Query.equal("accountId", result.$id)],
-    );
+    try {
+      console.log("📱 Getting account details...");
+      const result = await account.get();
+      console.log("👤 Account details:", result.email);
 
-    if (user.total <= 0) return null;
+      // Use admin client to query database to avoid scope issues
+      console.log("🔍 Looking for user in database using admin client...");
+      const { databases } = await createAdminClient();
+      
+      const user = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.usersCollectionId,
+        [Query.equal("accountId", result.$id)],
+      );
 
-    return parseStringify(user.documents[0]);
+      console.log("📊 User query result:", user.total);
+
+      if (user.total <= 0) {
+        console.log("❌ User not found in database");
+        return null;
+      }
+
+      console.log("✅ User found in database:", user.documents[0].email);
+      return parseStringify(user.documents[0]);
+    } catch (scopeError) {
+      console.log("⚠️ Account scope error, trying fallback API...");
+      
+      // If we have scope issues, try the fallback API
+      try {
+        const response = await fetch('/api/get-current-user', {
+          method: 'GET',
+          headers: {
+            'Cookie': `appwrite-session=${(await cookies()).get('appwrite-session')?.value}`,
+          },
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          if (userData.success && userData.user) {
+            console.log("✅ User found via fallback API:", userData.user.email);
+            return userData.user;
+          }
+        }
+      } catch (apiError) {
+        console.log("❌ Fallback API failed:", apiError);
+      }
+      
+      throw scopeError;
+    }
   } catch (error) {
-    console.log(error);
+    console.log("❌ Error getting current user:", error);
+    return null;
   }
 };
 
@@ -132,44 +180,30 @@ export const signInUser = async ({ email }: { email: string }) => {
 };
 
 export const signOutUser = async () => {
-  const { account } = await createSessionClient();
-
   try {
-    await account.deleteSession("current");
+    console.log("🚪 Signing out user...");
+    
+    // Clear server-side session
+    const sessionClient = await createSessionClient();
+    if (sessionClient) {
+      const { account } = sessionClient;
+      await account.deleteSession("current");
+    }
+    
+    // Clear session cookie
     (await cookies()).delete("appwrite-session");
+    
+    console.log("✅ User signed out successfully");
   } catch (error) {
-    handleError(error, "Failed to sign out user");
+    console.log("⚠️ Error during sign out:", error);
+    // Still clear the cookie even if session deletion fails
+    (await cookies()).delete("appwrite-session");
   } finally {
     redirect("/sign-in");
   }
 };
 
-export const signInWithOAuth = async (provider: 'google' | 'github') => {
-  try {
-    const { account } = await createAdminClient();
-    
-    const providerMap = {
-      google: OAuthProvider.Google,
-      github: OAuthProvider.Github,
-    };
-    
-    const successRedirectUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/oauth`;
-    const failureRedirectUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/sign-in?error=oauth_failed`;
-    
-    console.log("Creating OAuth token for:", provider);
-    console.log("Success URL:", successRedirectUrl);
-    console.log("Failure URL:", failureRedirectUrl);
-    
-    const redirectURL = await account.createOAuth2Token(
-      providerMap[provider],
-      successRedirectUrl,
-      failureRedirectUrl,
-    );
-    
-    console.log("OAuth redirect URL created:", redirectURL);
-    return redirectURL;
-  } catch (error) {
-    console.error(`OAuth ${provider} error:`, error);
-    handleError(error, `Failed to sign in with ${provider}`);
-  }
-};
+// OAuth is now handled client-side in AuthForm component
+// Using account.createOAuth2Session() from @/lib/appwrite/client
+// OAuth user creation is handled via /api/oauth-sync API route
+

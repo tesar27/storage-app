@@ -140,14 +140,26 @@ export const deleteFile = async ({fileId, bucketFileId, path}: DeleteFileProps) 
 
 export async function getTotalSpaceUsed() {
   try {
-    const { databases } = await createSessionClient();
+    // Use admin client to avoid scope issues
+    const { databases } = await createAdminClient();
     const currentUser = await getCurrentUser();
-    if (!currentUser) throw new Error("User is not authenticated.");
+    if (!currentUser) {
+      console.log("No user found for getTotalSpaceUsed");
+      return { 
+        image: { size: 0, latestDate: "" },
+        document: { size: 0, latestDate: "" },
+        video: { size: 0, latestDate: "" },
+        audio: { size: 0, latestDate: "" },
+        other: { size: 0, latestDate: "" },
+        used: 0,
+        all: 2 * 1024 * 1024 * 1024,
+      };
+    }
 
     const files = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.filesCollectionId,
-      [Query.equal("owner", [currentUser.$id])],
+      [Query.equal("owner", [currentUser.$id]), Query.limit(10000)],
     );
 
     const totalSpace = {

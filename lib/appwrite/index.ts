@@ -5,14 +5,28 @@ import { appwriteConfig } from './config';
 import { cookies } from 'next/headers';
 
 export const createSessionClient = async () => {
+  console.log("🔧 Creating session client...");
   const client = new Client()
   .setEndpoint(appwriteConfig.endpointUrl)
   .setProject(appwriteConfig.projectId);
 
-  const session  = (await cookies()).get('appwrite-session');
+  const cookieStore = await cookies();
+  const session = cookieStore.get('appwrite-session');
+  
+  console.log("🍪 Session cookie found:", !!session?.value);
+  console.log("🔍 Cookie details:", {
+    exists: !!session,
+    hasValue: !!session?.value,
+    valueLength: session?.value?.length || 0,
+    cookieName: session?.name,
+  });
 
-  if (!session || !session.value) throw new Error("No session");
+  if (!session || !session.value) {
+    console.log("❌ No session cookie available");
+    return null;
+  }
 
+  console.log("✅ Setting session on client with value:", session.value.substring(0, 20) + "...");
   client.setSession(session.value); 
 
   return {
