@@ -18,6 +18,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { convertFileSize } from "@/lib/utils";
 
 const getColorForFileType = (fileType: string): string => {
   const colors: { [key: string]: string } = {
@@ -134,7 +135,7 @@ export function ChartPie({ files, used }: { files: any; used: number }) {
       <CardFooter className="flex-col gap-3 pt-6">
         <div className="flex items-center gap-2 font-medium text-slate-700">
           <div className="w-2 h-2 bg-sky-500 rounded-full"></div>
-          Storage Used: {Math.round(used / 1024)} MB
+          Storage Used: {convertFileSize(used)}
         </div>
         {chartData.length > 0 && (
           <div className="grid grid-cols-2 gap-4 w-full text-sm">

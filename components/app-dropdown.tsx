@@ -128,16 +128,14 @@ const AppDropdown = ({ file }: { file: Models.Document }) => {
           </DialogDescription>
         </DialogHeader>
         {["rename", "delete", "share"].includes(value) && (
-          <DialogFooter className="flex">
-            <div className="flex justify-center gap-3">
-              <Button onClick={closeAllmodals} variant="outline">
-                Cancel
-              </Button>
-              <Button onClick={handleAction}>
-                <p className="capitalize">{value}</p>
-                {isLoading && <Loader2 className="animate-spin" />}
-              </Button>
-            </div>
+          <DialogFooter>
+            <Button onClick={closeAllmodals} variant="outline">
+              Cancel
+            </Button>
+            <Button onClick={handleAction}>
+              <p className="capitalize">{value}</p>
+              {isLoading && <Loader2 className="animate-spin" />}
+            </Button>
           </DialogFooter>
         )}
       </DialogContent>

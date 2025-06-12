@@ -63,4 +63,5 @@ export const avatarPlaceholderUrl =
     },
   ];
   
-export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+export const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+export const MAX_TOTAL_STORAGE = 10 * 1024 * 1024; // 10MB per user

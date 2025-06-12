@@ -7,11 +7,33 @@ import { constructFileUrl, getFileType, handleError, parseStringify } from "../u
 import { InputFile } from 'node-appwrite/file';
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./user.actions";
+import { MAX_TOTAL_STORAGE } from "@/constants";
 
 export const uploadFile = async ({file, ownerId, accountId, path}: UploadFileProps) => {
  const { storage, databases} = await createAdminClient();
 
  try {
+  // Check storage limits before uploading
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    throw new Error("User not authenticated");
+  }
+
+  // Get current storage usage
+  const files = await databases.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.filesCollectionId,
+    [Query.equal("owner", [ownerId]), Query.limit(10000)],
+  );
+
+  const currentUsage = files.documents.reduce((total, file) => total + file.size, 0);
+  
+  // Check if adding this file would exceed the limit
+  if (currentUsage + file.size > MAX_TOTAL_STORAGE) {
+    const remainingSpace = MAX_TOTAL_STORAGE - currentUsage;
+    throw new Error(`Storage limit exceeded. You have ${(remainingSpace / (1024 * 1024)).toFixed(2)}MB remaining. Total limit is 10MB per user.`);
+  }
+
   const inputFile = InputFile.fromBuffer(file, file.name);
 
   const bucketFile = await storage.createFile(appwriteConfig.bucketId, ID.unique(), inputFile)
@@ -152,7 +174,7 @@ export async function getTotalSpaceUsed() {
         audio: { size: 0, latestDate: "" },
         other: { size: 0, latestDate: "" },
         used: 0,
-        all: 2 * 1024 * 1024 * 1024,
+        all: MAX_TOTAL_STORAGE, // 10MB per user
       };
     }
 
@@ -169,7 +191,7 @@ export async function getTotalSpaceUsed() {
       audio: { size: 0, latestDate: "" },
       other: { size: 0, latestDate: "" },
       used: 0,
-      all: 2 * 1024 * 1024 * 1024 /* 2GB available bucket storage */,
+      all: MAX_TOTAL_STORAGE, // 10MB per user
     };
 
     files.documents.forEach((file) => {
