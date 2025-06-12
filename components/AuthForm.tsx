@@ -20,6 +20,7 @@ import {
   createAccount,
   sendEmailOTP,
   signInUser,
+  signInWithPassword,
 } from "@/lib/actions/user.actions";
 import { account, OAuthProvider } from "@/lib/appwrite/client";
 import OTPModal from "./OTPModal";
@@ -34,12 +35,15 @@ const authFormSchema = (formType: FormType) =>
       formType === "sign-up"
         ? z.string().min(2).max(50)
         : z.string().optional(),
+    password:
+      formType === "sign-in" ? z.string().optional() : z.string().optional(),
   });
 
 export const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [accountId, setAccountId] = useState("");
+  const [usePasswordSignIn, setUsePasswordSignIn] = useState(false);
   // 1. Define your form.
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,6 +51,7 @@ export const AuthForm = ({ type }: { type: FormType }) => {
     defaultValues: {
       fullName: "",
       email: "",
+      password: "",
     },
   });
 
@@ -57,17 +62,47 @@ export const AuthForm = ({ type }: { type: FormType }) => {
     setIsLoading(true);
     setErrorMessage("");
     try {
-      const user =
-        type === "sign-up"
-          ? await createAccount({
-              fullName: values.fullName || "",
-              email: values.email,
-            })
-          : await signInUser({ email: values.email });
+      if (type === "sign-up") {
+        const user = await createAccount({
+          fullName: values.fullName || "",
+          email: values.email,
+        });
+        setAccountId(user.accountId);
+      } else {
+        // Sign-in logic
+        if (usePasswordSignIn && values.password) {
+          // Password-based sign-in
+          const result = await signInWithPassword({
+            email: values.email,
+            password: values.password,
+          });
 
-      setAccountId(user.accountId);
-    } catch {
-      setErrorMessage("Failed to create account. Please try again.");
+          if (result && !result.needsPasswordSetup) {
+            // Redirect to dashboard on successful password sign-in
+            window.location.href = "/";
+            return;
+          }
+        } else {
+          // OTP-based sign-in
+          const user = await signInUser({ email: values.email });
+          setAccountId(user.accountId);
+        }
+      }
+    } catch (error: any) {
+      console.error("Auth error:", error);
+      if (
+        error.message?.includes("Invalid credentials") ||
+        error.message?.includes("password")
+      ) {
+        setErrorMessage("Invalid email or password. Please try again.");
+      } else if (error.message?.includes("Password not set up")) {
+        setErrorMessage(
+          "No password set for this account. Please use email verification."
+        );
+        setUsePasswordSignIn(false);
+      } else {
+        setErrorMessage("Failed to authenticate. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -246,6 +281,50 @@ export const AuthForm = ({ type }: { type: FormType }) => {
               )}
             />
 
+            {/* Password field for sign-in */}
+            {type === "sign-in" && usePasswordSignIn && (
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 font-medium">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your password"
+                        type="password"
+                        className="h-12 border-slate-200 focus:border-sky-400 focus:ring-sky-400/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* Sign-in method toggle */}
+            {type === "sign-in" && (
+              <div className="text-center">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setUsePasswordSignIn(!usePasswordSignIn);
+                    setErrorMessage("");
+                    form.setValue("password", "");
+                  }}
+                  className="text-sky-600 hover:text-sky-700 hover:bg-sky-50 p-0 h-auto font-medium"
+                >
+                  {usePasswordSignIn
+                    ? "Use email verification instead"
+                    : "Sign in with password"}
+                </Button>
+              </div>
+            )}
+
             <Button
               type="submit"
               disabled={isLoading}
@@ -257,7 +336,11 @@ export const AuthForm = ({ type }: { type: FormType }) => {
                   <span>Processing...</span>
                 </div>
               ) : type === "sign-in" ? (
-                "Sign In"
+                usePasswordSignIn ? (
+                  "Sign In"
+                ) : (
+                  "Send Verification Code"
+                )
               ) : (
                 "Create Account"
               )}

@@ -24,6 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { signOutUser } from "@/lib/actions/user.actions";
+import Link from "next/link";
 
 const NavUser = ({
   user,
@@ -94,9 +95,14 @@ const NavUser = ({
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="bg-slate-200" />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="text-slate-700 hover:bg-slate-50 rounded-lg mx-1">
-                <BadgeCheck className="text-slate-500" />
-                Account
+              <DropdownMenuItem
+                asChild
+                className="text-slate-700 hover:bg-slate-50 rounded-lg mx-1"
+              >
+                <Link href="/account">
+                  <BadgeCheck className="text-slate-500" />
+                  Account
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="text-slate-700 hover:bg-slate-50 rounded-lg mx-1">
                 <CreditCard className="text-slate-500" />
