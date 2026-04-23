@@ -1,6 +1,6 @@
 'use server';
 
-import { ID, Models, Query } from "node-appwrite";
+import { ID, Models, Query, Permission, Role } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { constructFileUrl, getFileType, handleError, parseStringify } from "../utils";
@@ -36,7 +36,16 @@ export const uploadFile = async ({file, ownerId, accountId, path}: UploadFilePro
 
   const inputFile = InputFile.fromBuffer(file, file.name);
 
-  const bucketFile = await storage.createFile(appwriteConfig.bucketId, ID.unique(), inputFile)
+  const bucketFile = await storage.createFile(
+  appwriteConfig.bucketId,
+  ID.unique(),
+  inputFile,
+  [
+    Permission.read(Role.user(accountId)),
+    Permission.update(Role.user(accountId)),
+    Permission.delete(Role.user(accountId)),
+  ]
+)
 
   const fileDocument = {
     type: getFileType(bucketFile.name).type,
